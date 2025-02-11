@@ -11,4 +11,21 @@ const blogSchema = new Schema<Blog>({
      { timestamps: true },
 );
 
-export const orderModel = model<Blog>('blog', blogSchema);
+// query middleware
+
+blogSchema.pre('find', function(next){
+    this.find({isDeleted: {$ne: true}});
+   next();
+ });
+ 
+ blogSchema.pre('findOne', function(next){
+    this.find({isDeleted: {$ne: true}});
+   next();
+ });
+ 
+ blogSchema.pre('aggregate', function(next){
+    this.pipeline().unshift({$match:{isDeleted: {$ne: true}}});
+   next();
+ });
+
+export const blogModel = model<Blog>('blog', blogSchema);

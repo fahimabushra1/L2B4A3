@@ -10,10 +10,10 @@ const objectIdSchema = z.custom<Types.ObjectId>(
 
 const BlogValidationSchema = z. object({
 
-    title: z.string().nonempty("Title is required"),
-    author: objectIdSchema,
-    content: z.string().nonempty("Content is required"),
-    isPublished: z.boolean().default(true),
+     title: z.string().nonempty("Title is required"),
+     author: objectIdSchema,
+     content: z.string().nonempty("Content is required"),
+     isPublished: z.boolean().default(true),
 });
 
 export {BlogValidationSchema};
