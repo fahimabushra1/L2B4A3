@@ -8,7 +8,7 @@ const blogSchema = new Schema<Blog>({
     author:  {type: Schema.Types.ObjectId, ref:"user", required: true},
     isPublished: { type: Boolean, default: true },
 },
-     { timestamps: true }
+     { timestamps: true },
 );
 
 export const orderModel = model<Blog>('blog', blogSchema);
