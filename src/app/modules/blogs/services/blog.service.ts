@@ -22,7 +22,7 @@ const updateBlogFromDB = async (id: string, updateData: Partial<Blog>) =>{
 };
 
 const deleteBlogFromDB = async (id : string) =>{
-    const result = await blogModel.updateOne({id}, {isDeleted: true});
+    const result = await blogModel.deleteOne({id}, {isDeleted: true});
     return result;
 }
 

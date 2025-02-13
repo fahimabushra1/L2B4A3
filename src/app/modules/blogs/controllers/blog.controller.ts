@@ -65,12 +65,12 @@ const getAllBlogs = async(req: Request, res: Response) =>{
 
   const updateBlog = async(req: Request, res: Response) =>{
     try{
-      const {blogId} = req.params;
-      // console.log({blogId})
+      const {id} = req.params;
+      console.log({id})
       const updatedBlog = req.body;
-      // console.log(updatedBlog)
-      const result = await BlogServices.updateBlogFromDB(blogId, updatedBlog);
-      // console.log(result)
+      console.log(updatedBlog)
+      const result = await BlogServices.updateBlogFromDB(id, updatedBlog);
+      console.log(result)
   
       res.status(200).json({
         success: true,
@@ -89,8 +89,10 @@ const getAllBlogs = async(req: Request, res: Response) =>{
   
   const deleteBlog = async(req: Request, res: Response) =>{
     try{
-      const {blogId} = req.params;
-      const result = await BlogServices.deleteBlogFromDB(blogId);
+      const {id} = req.params;
+      console.log(id)
+      const result = await BlogServices.deleteBlogFromDB(id);
+      console.log(result);
   
       res.status(200).json({
           success: true,
