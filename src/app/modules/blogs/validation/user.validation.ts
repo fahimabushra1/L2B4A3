@@ -1,12 +1,11 @@
-import { z } from "zod";
+import { AnyZodObject, z } from "zod";
 
-const UserValidationSchema = z.object({
-
-    name:  z.string().nonempty("Title is required"),
-    email:  z.string().nonempty("Title is required"),
-    password:  z.string().nonempty("Title is required").min(6, { message: "password must be at least 6 characters" }).max(10, { message: "password must be maximum 10 characters" }),
-    role: z.enum(["admin", "user"]),
-    isBlocked: z.boolean().default(false),
+const UserValidationSchema: AnyZodObject = z.object({
+    body: z.object({
+        user:z.object({
+            password:  z.string({invalid_type_error: "password must be string"}).nonempty("Title is required").min(6, { message: "password must be at least 6 characters" }).max(10, { message: "password must be maximum 10 characters" }). optional(),
+        })
+    })
 });
 
-export {UserValidationSchema};
+export const UserValidations =  {UserValidationSchema};
