@@ -1,8 +1,15 @@
 import { model, Schema } from "mongoose";
-import { Admin } from "./admin.interface";
+import { Admin, InAdminModel } from "./admin.interface";
 
-const userSchema = new Schema<Admin>({
+const adminSchema = new Schema<Admin,InAdminModel>({
 
+    id: {type: String, unique: true},
+    user: {
+        type: Schema.Types.ObjectId,
+        required: [true, 'User id is required'],
+        unique: true,
+        ref: 'user',
+      },
     name:{type: String, required: [true, "full name must be needed"]},
     email: {type: String, required: [true, "email must be needed"]},
     password: {type: String, required: [true, "password must be needed"]},
@@ -11,4 +18,11 @@ const userSchema = new Schema<Admin>({
     { timestamps: true },
 );
 
-export const userModel = model<Admin> ("admin", userSchema);
+
+//checking if user is already exist!
+adminSchema.statics.isUserExists = async function (id: string) {
+    const existingUser = await adminModel.findOne({ id });
+    return existingUser;
+  };
+
+export const adminModel = model<Admin> ("admin", adminSchema);

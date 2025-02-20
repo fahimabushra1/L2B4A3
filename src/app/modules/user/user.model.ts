@@ -1,8 +1,8 @@
 import { model, Schema } from "mongoose";
-import { User } from "./user.interface";
+import { InUserModel, User } from "./user.interface";
 
-const userSchema = new Schema<User>({
-    id: {type: String},
+const userSchema = new Schema<User, InUserModel>({
+    id: {type: String, unique: true},
     name:{type: String, required: [true, "full name must be needed"]},
     email: {type: String, required: [true, "email must be needed"]},
     password: {type: String, required: [true, "password must be needed"]},

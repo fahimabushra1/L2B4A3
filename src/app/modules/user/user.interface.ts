@@ -11,6 +11,6 @@ export type User = {
 
 
 // for creating static
-export interface UserModel extends Model<User> {
+export interface InUserModel extends Model<User> {
     isUserExist(id: string): Promise<User | null>;
 };
