@@ -1,4 +1,6 @@
+import  httpStatus  from 'http-status';
 // import { UserValidation } from "../validation/user.validation";
+import sendResponse from "../../../utils/sendResponse";
 import { UserServices } from "../services/user.service";
 import catchAsync from "../utils/catchAsync";
 // import {  AdminValidationSchema } from "../validation/admin.validation";
@@ -12,11 +14,12 @@ const createUser= catchAsync(
       
     const result = await UserServices.createUserIntoDB(password, userData);
     
-    res.status(200).json({
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
         success: true,
-        message:"student is created successfully",
+        message: 'User is created successfully',
         data: result,
-    });
+      });
     });
 
 const createAdmin= catchAsync(
@@ -29,11 +32,12 @@ const createAdmin= catchAsync(
       
     const result = await UserServices.createAdminIntoDB(adminData);
     
-    res.status(200).json({
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
         success: true,
-        message:"student is created successfully",
+        message: 'Admin is created successfully',
         data: result,
-    });
+      });
     });
     
     export const UserControllers = {
