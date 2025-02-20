@@ -1,5 +1,5 @@
-import { Blog } from "../interfaces/blog.interface";
-import { blogModel } from "../models/blog.model";
+import { Blog } from "./blog.interface";
+import { blogModel } from "./blog.model";
 
 const createBlogIntoDB = async (blog: Blog)=>{
     const result = await blogModel.create(blog);

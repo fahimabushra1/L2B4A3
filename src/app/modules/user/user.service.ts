@@ -1,7 +1,7 @@
-import config from "../../../config";
-import { Admin } from "../interfaces/admin.interface";
-import { User } from "../interfaces/user.interface";
-import { userModel } from "../models/user.model";
+import config from "../../config";
+import { Admin } from "../admin/admin.interface";
+import { User } from "./user.interface";
+import { userModel } from "./user.model";
 
 const createUserIntoDB = async (password:string, userData: User) => {
 

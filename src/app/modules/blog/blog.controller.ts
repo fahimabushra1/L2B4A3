@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { BlogValidationSchema } from "../validation/blog.validation";
-import { BlogServices } from "../services/blog.service";
+import { BlogValidationSchema } from "./blog.validation";
+import { BlogServices } from "./blog.service";
 
 const createBlog = (req: Request, res: Response) =>{
     try{

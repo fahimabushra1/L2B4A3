@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { UserRoutes } from '../modules/blogs/routers/user.router';
-import { AdminRoutes } from '../modules/blogs/routers/admin.router';
+import { UserRoutes } from '../modules/user/user.router';
+import { AdminRoutes } from '../modules/admin/admin.router';
 
 const router = Router();
 

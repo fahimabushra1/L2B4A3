@@ -1,8 +1,8 @@
 import  httpStatus  from 'http-status';
 // import { UserValidation } from "../validation/user.validation";
-import sendResponse from "../../../utils/sendResponse";
-import { UserServices } from "../services/user.service";
-import catchAsync from "../utils/catchAsync";
+import sendResponse from "../../utils/sendResponse";
+import { UserServices } from "./user.service";
+import catchAsync from "../../utils/catchAsync";
 // import {  AdminValidationSchema } from "../validation/admin.validation";
 
 const createUser= catchAsync(

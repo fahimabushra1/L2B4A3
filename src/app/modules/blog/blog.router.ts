@@ -1,5 +1,5 @@
 import express  from 'express';
-import { BlogControllers } from '../controllers/blog.controller';
+import { BlogControllers } from './blog.controller';
 
 const router = express.Router();
 router.post('/api/blogs', BlogControllers.createBlog);
