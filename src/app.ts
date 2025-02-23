@@ -17,8 +17,7 @@ app.get('/', (req: Request, res: Response) => {
   res.send("It's L2B4A3!")
 });
 
-app.use(globalErrorHandler);
 app.use(notFound);
-
+app.use(globalErrorHandler);
 
 export default app;

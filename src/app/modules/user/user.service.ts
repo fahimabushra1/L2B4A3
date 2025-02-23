@@ -2,31 +2,30 @@ import mongoose from "mongoose";
 import config from "../../config";
 import AppError from "../../errors/AppError";
 import { Admin } from "../admin/admin.interface";
-import { Blog } from "../blog/blog.interface";
-import { blogModel } from "../blog/blog.model";
 import { userModel } from "./user.model";
-import { generateUserId } from "./user.utils";
+import { generateAdminId, generateUserId } from "./user.utils";
 import { User } from "./user.interface";
 import httpStatus from 'http-status';
+import { adminModel } from "../admin/admin.model";
 
-const createUserIntoDB = async (password: string, payload: Blog) => {
+const createUserIntoDB = async ( payload: User) => {
     // create a user object
     const userData: Partial<User> = {};
   
     //if password is not given , use default password
-    userData.password = password || (config.default_pass as string);
+    userData.password  || (config.default_pass as string);
   
     //set user role
     userData.role = 'user';
   
     // find author info
-    const author = await blogModel.findById(
-      payload.author,
-    );
+    // const author = await blogModel.findById(
+    //   payload.author,
+    // );
   
-    if (!author) {
-      throw new AppError(400, 'author is not found');
-    }
+    // if (!author) {
+    //   throw new AppError(400, 'author is not found');
+    // }
   
     const session = await mongoose.startSession();
   
@@ -37,6 +36,11 @@ const createUserIntoDB = async (password: string, payload: Blog) => {
   
       // create a user (transaction-1)
       const newUser = await userModel.create([userData], { session });
+      console.log(newUser)
+
+       // set id , _id as user
+       payload.id = newUser[0].id;
+       console.log(payload.id)
   
      if (!newUser.length) {
       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user');
@@ -52,14 +56,14 @@ const createUserIntoDB = async (password: string, payload: Blog) => {
     }
   };
 
-  const createAdminIntoDB = async (password: string, payload: TAdmin) => {
+  const createAdminIntoDB = async (password: string, payload: Admin) => {
     // create a user object
-    const userData: Partial<TUser> = {};
+    const userData: Partial<User> = {};
   
-    //if password is not given , use deafult password
-    userData.password = password || (config.default_password as string);
+    //if password is not given , use default password
+    userData.password = password || (config.default_pass as string);
   
-    //set student role
+    //set admin role
     userData.role = 'admin';
   
     const session = await mongoose.startSession();
@@ -70,9 +74,9 @@ const createUserIntoDB = async (password: string, payload: Blog) => {
       userData.id = await generateAdminId();
   
       // create a user (transaction-1)
-      const newUser = await User.create([userData], { session });
+      const newUser = await userModel.create([userData], { session });
   
-      //create a admin
+      //create an admin
       if (!newUser.length) {
         throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create admin');
       }
@@ -81,7 +85,7 @@ const createUserIntoDB = async (password: string, payload: Blog) => {
       payload.user = newUser[0]._id; //reference _id
   
       // create a admin (transaction-2)
-      const newAdmin = await Admin.create([payload], { session });
+      const newAdmin = await adminModel.create([payload], { session });
   
       if (!newAdmin.length) {
         throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create admin');
