@@ -18,15 +18,6 @@ const createUserIntoDB = async ( payload: User) => {
     //set user role
     userData.role = 'user';
   
-    // find author info
-    // const author = await blogModel.findById(
-    //   payload.author,
-    // );
-  
-    // if (!author) {
-    //   throw new AppError(400, 'author is not found');
-    // }
-  
     const session = await mongoose.startSession();
   
     try {
@@ -49,6 +40,7 @@ const createUserIntoDB = async ( payload: User) => {
       await session.commitTransaction();
       await session.endSession();
 
+        return newUser;
     } catch (err: any) {
       await session.abortTransaction();
       await session.endSession();
