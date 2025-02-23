@@ -10,7 +10,15 @@ import { adminModel } from "../admin/admin.model";
 
 const createUserIntoDB = async ( payload: User) => {
     // create a user object
-    const userData: Partial<User> = {};
+    const userData: Partial<User> = {
+      
+        name: payload.name,
+        email: payload.email,
+        password: payload.password || config.default_pass, // Set default password if missing
+        role: 'user',
+        id: await generateUserId(), // Generate user ID
+    
+    };
   
     //if password is not given , use default password
     userData.password  || (config.default_pass as string);
@@ -50,7 +58,15 @@ const createUserIntoDB = async ( payload: User) => {
 
   const createAdminIntoDB = async (password: string, payload: Admin) => {
     // create a user object
-    const userData: Partial<User> = {};
+    const userData: Partial<User> = {
+      
+        name: payload.name,
+        email: payload.email,
+        password: payload.password || config.default_pass, // Set default password if missing
+        role: 'admin',
+        id: await generateAdminId(), // Generate user ID
+    
+    };
   
     //if password is not given , use default password
     userData.password = password || (config.default_pass as string);
