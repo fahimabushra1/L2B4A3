@@ -1,7 +1,9 @@
 import { model, Schema } from "mongoose";
-import { InUserModel, User } from "./user.interface";
+import { TUserModel, User } from "./user.interface";
+import bcrypt from 'bcrypt';
+import config from "../../config";
 
-const userSchema = new Schema<User, InUserModel>({
+const userSchema = new Schema<User, TUserModel>({
     id: {type: String, unique: true},
     name:{type: String, required: [true, "name must be needed"]},
     email: {type: String, required: [true, "email must be needed"]},
@@ -13,12 +15,43 @@ const userSchema = new Schema<User, InUserModel>({
 );
 
 
+userSchema.pre('save', async function (next) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const user = this; // doc
+    // hashing password and save into DB
+  
+    user.password = await bcrypt.hash(
+      user.password,
+      Number(config.bcrypt_salt_rounds),
+    );
+  
+    next();
+  });
+  
+  // set '' after saving password
+  userSchema.post('save', function (doc, next) {
+    doc.password = '';
+    next();
+  });
+  
+  userSchema.statics.isUserExistsByCustomId = async function (id: string) {
+    return await userModel.findOne({ id }).select('+password');
+  };
+  
+  userSchema.statics.isPasswordMatched = async function (
+    plainTextPassword,
+    hashedPassword,
+  ) {
+    return await bcrypt.compare(plainTextPassword, hashedPassword);
+  };
+  
+  userSchema.statics.isJWTIssuedBeforePasswordChanged = function (
+    passwordChangedTimestamp: Date,
+    jwtIssuedTimestamp: number,
+  ) {
+    const passwordChangedTime =
+      new Date(passwordChangedTimestamp).getTime() / 1000;
+    return passwordChangedTime > jwtIssuedTimestamp;
+  };
 
-// creating a custom static method
-userSchema.statics.isUserExist = async function (id: string) {
-    const existingUser = await userModel.findOne({id});
-    return existingUser;
-};
-
-
-export const userModel = model<User> ("user", userSchema);
+export const userModel = model<User, TUserModel> ("user", userSchema);

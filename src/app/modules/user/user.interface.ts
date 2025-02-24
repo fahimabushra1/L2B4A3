@@ -1,4 +1,5 @@
 import { Model } from "mongoose";
+import { USER_ROLE } from "./user.constant";
 
 export type User = {
     id: string;
@@ -9,8 +10,18 @@ export type User = {
     isBlocked: boolean;
 };
 
-
-// for creating static
-export interface InUserModel extends Model<User> {
-    isUserExist(id: string): Promise<User | null>;
-};
+export interface TUserModel extends Model<User> {
+    //instance methods for checking if the user exist
+    isUserExistsByCustomId(id: string): Promise<User>;
+    //instance methods for checking if passwords are matched
+    isPasswordMatched(
+      plainTextPassword: string,
+      hashedPassword: string,
+    ): Promise<boolean>;
+    isJWTIssuedBeforePasswordChanged(
+      passwordChangedTimestamp: Date,
+      jwtIssuedTimestamp: number,
+    ): boolean;
+  }
+  
+  export type userRole = keyof typeof USER_ROLE;
