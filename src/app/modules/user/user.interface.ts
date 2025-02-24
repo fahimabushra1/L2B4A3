@@ -6,6 +6,8 @@ export type User = {
     name: string;
     email: string;
     password: string;
+    needsPasswordChange: boolean;
+    passwordChangedAt?: Date;
     role: "admin" | "user";
     isBlocked: boolean;
 };
