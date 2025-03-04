@@ -6,6 +6,70 @@ import AppError from '../../app/errors/AppError';
 import { userModel } from '../modules/user/user.model';
 import { User } from '../modules/user/user.interface';
 import { createToken } from './auth.utils';
+import mongoose from "mongoose";
+import { generateUserId } from '../modules/user/user.utils';
+
+const registerUser = async ( payload: User) => {
+
+  const validRoles = ['user', 'admin'];
+  const role = validRoles.includes(payload.role as string) ? payload.role : 'user';
+
+  const userId = await generateUserId(payload.role);
+   // Debugging log
+  
+  const newUser = new userModel({ ...payload, id: userId });
+  await newUser.save();
+  console.log("Saved User Data:", newUser);
+  
+   // Generate ID based on role
+   const generatedId = await generateUserId(payload.role);
+   console.log("Final User ID Assigned:", generatedId);
+
+  // create a user object
+  const userData: Partial<User> = {
+    
+      name: payload.name,
+      email: payload.email,
+      password: payload.password || config.default_pass, 
+      role,
+      id: generatedId,
+  
+  };
+
+ 
+
+  //if password is not given , use default password
+  userData.password  || (config.default_pass as string);
+
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+    //set  generated id
+    userData.id = await generateUserId();
+
+    // create a user (transaction-1)
+    const newUser = await userModel.create([userData], { session });
+    console.log(newUser)
+
+     // set id , _id as user
+     payload.id = newUser[0].id;
+     console.log(payload.id)
+
+   if (!newUser.length) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user');
+  }
+
+    await session.commitTransaction();
+    await session.endSession();
+
+      return newUser;
+  } catch (err: any) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new Error(err);
+  }
+};
 
 const loginUser = async (payload: User) => {
   // checking if the user is exist
@@ -145,6 +209,7 @@ const refreshToken = async (token: string) => {
 };
 
 export const AuthServices = {
+  registerUser,
   loginUser,
   changePassword,
   refreshToken,

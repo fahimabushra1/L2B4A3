@@ -3,11 +3,11 @@ import httpStatus from 'http-status';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../config';
 import AppError from '../errors/AppError';
-import { User } from '../modules/user/user.interface';
 import { userModel } from '../modules/user/user.model';
 import catchAsync from '../utils/catchAsync';
+import { userRole } from '../modules/user/user.interface';
 
-const auth = (...requiredRoles: User[]) => {
+const auth = (...requiredRoles: userRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization;
 

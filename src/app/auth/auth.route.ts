@@ -8,6 +8,11 @@ import auth from '../middlewares/auth';
 const router = express.Router();
 
 router.post(
+  '/register',
+  validateRequest(AuthValidation.registerValidationSchema),
+  AuthControllers.registerUser,
+);
+router.post(
   '/login',
   validateRequest(AuthValidation.loginValidationSchema),
   AuthControllers.loginUser,

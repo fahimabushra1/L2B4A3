@@ -1,7 +1,6 @@
 import { userModel } from "./user.model";
 
 // user id
-
 const findLastUserId = async () => {
 
   const lastUser = await userModel.findOne(
@@ -20,14 +19,8 @@ const findLastUserId = async () => {
 
   return lastUser?.id ? lastUser.id : undefined;
 };
- export const  generateUserId = async() => {
- const currentId = (await findLastUserId()) || (0).toString();
- let incrementId = (Number(currentId)+ 1).toString().padStart(4, '0');
- return incrementId;
- }
 
- // admin id
-
+// admin id
 export const findLastAdminId = async () => {
   const lastAdmin = await userModel.findOne(
     {
@@ -46,16 +39,42 @@ export const findLastAdminId = async () => {
   return lastAdmin?.id ? lastAdmin.id.substring(2) : undefined;
 };
 
-export const generateAdminId = async () => {
-  let currentId = (0).toString();
+
+// Generate User/Admin ID dynamically
+ export const  generateUserId = async(role: string) => {
+ let currentId = (await findLastUserId()) || (0).toString();
+
+ 
+ if (role === "admin") {
   const lastAdminId = await findLastAdminId();
-
   if (lastAdminId) {
-    currentId = lastAdminId.substring(2);
+    currentId = lastAdminId;
   }
+  return`A-${(Number(currentId) + 1).toString().padStart(4, "0")}`;
+} else {
+  const lastUserId = await findLastUserId();
+  if (lastUserId) {
+    currentId = lastUserId;
+  }
+  return (Number(currentId)+ 1).toString().padStart(4, '0');
+}
+}
 
-  let incrementId = (Number(currentId) + 1).toString().padStart(4, '0');
+ 
 
-  incrementId = `A-${incrementId}`;
-  return incrementId;
-};
+
+
+// export const generateAdminId = async () => {
+//   let currentId = (0).toString();
+//   const lastAdminId = await findLastAdminId();
+
+//   if (lastAdminId) {
+//     currentId = lastAdminId.substring(2);
+//   }
+
+//   let incrementId = (Number(currentId) + 1).toString().padStart(4, '0');
+
+//   incrementId = `A-${incrementId}`;
+//   return incrementId;
+// };
+
