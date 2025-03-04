@@ -8,7 +8,6 @@ import auth from '../../middlewares/auth';
 
 const router = express.Router();
 
-// router.post('/create-admin',validateRequest(AdminValidationSchema), UserControllers.createAdmin);
 router.put('/users/:id/block',auth(USER_ROLE.admin), UserControllers.blockUser);
 
 export const UserRoutes = router;

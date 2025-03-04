@@ -14,17 +14,6 @@ const registerUser = async ( payload: User) => {
   const validRoles = ['user', 'admin'];
   const role = validRoles.includes(payload.role as string) ? payload.role : 'user';
 
-  const userId = await generateUserId(payload.role);
-   // Debugging log
-  
-  const newUser = new userModel({ ...payload, id: userId });
-  await newUser.save();
-  console.log("Saved User Data:", newUser);
-  
-   // Generate ID based on role
-   const generatedId = await generateUserId(payload.role);
-   console.log("Final User ID Assigned:", generatedId);
-
   // create a user object
   const userData: Partial<User> = {
     
@@ -32,11 +21,9 @@ const registerUser = async ( payload: User) => {
       email: payload.email,
       password: payload.password || config.default_pass, 
       role,
-      id: generatedId,
+      id: await generateUserId(payload.role),
   
   };
-
- 
 
   //if password is not given , use default password
   userData.password  || (config.default_pass as string);
@@ -46,15 +33,14 @@ const registerUser = async ( payload: User) => {
   try {
     session.startTransaction();
     //set  generated id
-    userData.id = await generateUserId();
+    userData.id = await generateUserId(payload.role);
 
     // create a user (transaction-1)
     const newUser = await userModel.create([userData], { session });
-    console.log(newUser)
+    // console.log("create a user",newUser)
 
      // set id , _id as user
      payload.id = newUser[0].id;
-     console.log(payload.id)
 
    if (!newUser.length) {
     throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user');
@@ -74,6 +60,7 @@ const registerUser = async ( payload: User) => {
 const loginUser = async (payload: User) => {
   // checking if the user is exist
   const user = await userModel.isUserExistsByCustomId(payload.id);
+  console.log(user, "login user")
 
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'This user is not found!');

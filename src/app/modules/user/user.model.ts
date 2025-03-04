@@ -37,7 +37,9 @@ userSchema.pre('save', async function (next) {
   });
   
   userSchema.statics.isUserExistsByCustomId = async function (id: string) {
-    return await userModel.findOne({ id }).select('+password');
+    const user = await userModel.findOne({ id }).select('+password');
+    console.log(user);
+      return user;
   };
   
   userSchema.statics.isPasswordMatched = async function (
